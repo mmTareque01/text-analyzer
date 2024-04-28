@@ -15,40 +15,22 @@ export class ResponseConfig<T> {
             .json({ ...{ info: this.info, links: this.links, message: message }, ...data });
     }
 
-    ER200(data = {}, message = "Data retrive successfull") {
-        return this.response(200, { data }, message)
+    private setCacheControll(type:string, age:number){
+        this.res.setHeader('Cache-Control', `${type}, max-age=${age}`)
     }
 
-    // ER200_Paginate(data = {}, totalData: number, pageNo: number) {
-    //     return this.response(200, {
-    //         data, paginate: {
-    //             totalData,
-    //             pageNo,
-    //             totalPage: Math.ceil(totalData / pageNo),
-    //             next: this.BASE_URL,
-    //             previous: this.BASE_URL,
-    //         }
-    //     })
-    // }
+    ER200(data = {}, message = "Data retrive successfull", setCache=false, type="public", age=36000) {
+        if(setCache){
+            this.setCacheControll(type, age)
+        }
+        return this.response(200, { data }, message)
+    }
 
     ER201(data = {}, message = "Record created successfull") {
         return this.response(201, { data }, message)
     }
 
-    ER400() {
-        console.log("this is console");
-        return { info: this.info, links: this.links, error: "" };
-    }
-
-    ER404() {
-        console.log("this is console");
-        return { info: this.info, links: this.links, error: "" };
-    }
-
-    ER402() {
-        console.log("this is console");
-        return { info: this.info, links: this.links, error: "" };
-    }
+ 
 
     ER401(data: any, message: string, error: string) {
         return this.response(401, { error: error, ...data }, message)

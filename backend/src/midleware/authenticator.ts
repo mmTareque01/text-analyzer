@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { ResponseConfig } from "../config/response/response.config";
 import jwt from "jsonwebtoken"
+import { SaveError } from "../utilis/storeError";
 
 
-export const checkTokenValid = (req: Request, res: Response, next: NextFunction) => {
+export const checkTokenValid =async (req: Request, res: Response, next: NextFunction) => {
     const response = new ResponseConfig(
         "If you get this response, it means, the request is not valid. Make sure you are following the proper way to call the api. If you are still facing the issue visit our documentation, thank you.",
         {
@@ -23,6 +24,7 @@ export const checkTokenValid = (req: Request, res: Response, next: NextFunction)
         next();
     } catch (err) {
         console.log(err)
+        await SaveError(err, req.ip || "", "Unknown")
         return response.ER401({}, "Invalid request. Login first please!", "Invalid request, session expired.")
     }
 };

@@ -3,6 +3,7 @@ import { ExpressInterface } from "../../../../config/interface/ExpressInterface"
 import { countWordService } from "../../service/analyzer/countWords.service";
 import { Request, Response } from "express";
 import { countParagraphService } from "../../service/analyzer/countParagraph.service";
+import { SaveError } from "../../../../utilis/storeError";
 
 
 
@@ -20,6 +21,7 @@ export const countParagraph = async (req:Request, res:Response) => {
         const paragraphCount = await countParagraphService(req.body.content, req.body.jwt);
         response.ER200(paragraphCount, );
     } catch (error) {
+        await SaveError(error, req.ip || "", req.body.jwt.uID)
         response.ER500();
     }
 };

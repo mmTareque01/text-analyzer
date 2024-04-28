@@ -1,6 +1,7 @@
 import { ResponseConfig } from "../../../../config/response/response.config"
 import { Request, Response } from "express";
 import { longestWordService } from "../../service/analyzer/longestWord.service";
+import { SaveError } from "../../../../utilis/storeError";
 
 
 export const longestWord = async (req: Request, res: Response) => {
@@ -14,9 +15,10 @@ export const longestWord = async (req: Request, res: Response) => {
     try {
 
         const longestWordData = await longestWordService(req.body.content, req.body.jwt);
-        response.ER200(longestWordData);
+        response.ER200(longestWordData, );
     } catch (error) {
-        console.log(error)
+        // console.log(error)
+        await SaveError(error, req.ip || "", req.body.jwt.uID)
         response.ER500();
     }
 };

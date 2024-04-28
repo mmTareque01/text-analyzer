@@ -1,4 +1,5 @@
 import { ResponseConfig } from "../../../../config/response/response.config"
+import { SaveError } from "../../../../utilis/storeError";
 import { countWordService } from "../../service/analyzer/countWords.service";
 import { Request, Response } from "express";
 
@@ -14,8 +15,9 @@ export const countWord = async (req: Request, res: Response) => {
 
     try {
         const wordCount = await countWordService(req.body.content, req.body.jwt);
-        response.ER200(wordCount, "Successfully counted the words!");
+        response.ER200(wordCount, "Successfully counted the words!", true);
     } catch (error) {
+        await SaveError(error, req.ip || "", req.body.jwt.uID)
         response.ER500();
     }
 };
